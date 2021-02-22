@@ -13,12 +13,15 @@ public class PayrollProcessing {
   String department = null;
   Date date = null;
   String dateHired;
-  float hourlyPay;
-  float salary;
+  Double hourlyPay;
+  Double salary;
+  Company company;
+  int role;
+  Employee temp;
 
   public void run() {
+    company = new Company();
     String input = "start";
-    int employeeID = 10000; // start of serial numbers
     String command = null;
 
     int fourTokens = 4;
@@ -39,57 +42,143 @@ public class PayrollProcessing {
 
       }
 
-      if (command.equals("AP")) {
+      if (command.equals("AP")) { // add part time worker
         if (date.isValid()) { // First checks if date is valid
-          System.out.println("Pay rate cannot be negative.");
-          System.out.println("Employee added.");
+          double payRate = Double.parseDouble(inputs.nextToken());
+          if (payRate < 0) {
+            System.out.println("Pay rate cannot be negative.");
+            continue;
+          } else {
+            Profile profile = new Profile(name, department, date);
+            Parttime employee = new Parttime(profile, payRate);
+            if (!departmentIsValid(department)) {
+              System.out.println("'" + department + "'" + " is not a valid department code.");
+              continue;
+            }
+            if (company.add(employee)) {
+              System.out.println("Employee added.");
+            } else {
+              System.out.println("Employee is already in the list.");
+            }
+          }
         } else {
           System.out.println(dateHired + "is not a valid date!");
           continue;
         }
-      } else if (command.equals("AF")) { // Add a fulltime employee
-        salary = Float.parseFloat(inputs.nextToken());
-        boolean isNegative = salaryIsNegative(salary);
-        if (isNegative) {
-          System.out.println("Salary cannot be negative.");
-        } else {
 
+      } else if (command.equals("AF")) { // Add a fulltime employee
+        if (!date.isValid()) {
+          System.out.println(dateHired + "is not a valid date!");
+          continue;
         }
-        System.out.println("Employee added.");
-      } else if (command.equals("AM")) { // Add a manager
-        salary = Float.parseFloat(inputs.nextToken());
+        salary = Double.parseDouble(inputs.nextToken());
         boolean isNegative = salaryIsNegative(salary);
+        if (!departmentIsValid(department)) {
+          System.out.println("'" + department + "'" + " is not a valid department code.");
+          continue;
+        }
         if (isNegative) {
           System.out.println("Salary cannot be negative.");
+          continue;
         } else {
-          System.out.println("Employee added.");
+          Profile profile = new Profile(name, department, date);
+          Fulltime employee = new Fulltime(profile, salary);
+          if (company.add(employee)) {
+            System.out.println("Employee added.");
+          } else {
+            System.out.println("Employee is already in the list.");
+          }
+        }
+      } else if (command.equals("AM")) { // Add a manager
+        if (!date.isValid()) {
+          System.out.println(dateHired + "is not a valid date!");
+        }
+        salary = Double.parseDouble(inputs.nextToken());
+        role = Integer.parseInt(inputs.nextToken());
+        if (role < 1 || role > 3) {
+          System.out.println("Invalid management code.");
+          continue;
+        }
+        boolean isNegative = salaryIsNegative(salary);
+        if (!departmentIsValid(department)) {
+          System.out.println("'" + department + "'" + " is not a valid department code.");
+          continue;
+        }
+        if (isNegative) {
+          System.out.println("Salary cannot be negative.");
+          continue;
+        } else {
+          Profile profile = new Profile(name, department, date);
+          Management management = new Management(profile, salary, role);
+          if (company.add(management)) {
+            System.out.println("Employee added.");
+          } else {
+            System.out.println("Employee is already in the list.");
+          }
         }
       } else if (command.equals("R")) {// Removes an employee from company database
         System.out.println("Employee removed."); // success
         // if empty
-        System.out.println("Employee Database is empty.");
+        System.out.println("Employee database is empty.");
       } else if (command.equals("C")) {// Calculate total payments for all employees
-
+        if (company.isEmpty()) {
+          System.out.println("Employee database is empty.");
+          continue;
+        }
+        company.processPayments();
+        System.out.println("Calculation of employee payments is done.");
       } else if (command.equals("S")) {// Set the hours for a part time employee
-        System.out.println("Working hours cannot be negative.");
+        int hoursWorked = Integer.parseInt(inputs.nextToken());
+        if (hoursWorked > 100) {
+          System.out.println("Invalid Hours: over 100.");
+        } else if (hoursWorked < 0) {
+          System.out.println("Working hours cannot be negative.");
+        }
+        Profile profile = new Profile(name, department, date);
+        Employee e = new Employee(profile);
+        if (company.setHours(e)) { // employee exists in list
+
+        }
+        if (!company.setHours(e)) {
+          System.out.println("Employee does not exist.");
+        }
+        ;
         System.out.println("Working hours set.");
       } else if (command.equals("PA")) {// Prints the earning statements for all employees
         System.out.println("--Printing earning statements for all employees--");
+        company.print();
       } else if (command.equals("PH")) {// Prints the earning statements for all employees in the order of date hired
+        company.printByDate();
         System.out.println("--Printing earning statements by date hired--");
       } else if (command.equals("PD")) {// Prints the earning statements for all employees grouped by departments.
         System.out.println("--Printing earning statements by department--");
       } else if (command.equals("Q")) {// Ends session, breaks loop
+        company.printByDepartment();
         System.out.println("Payroll Processing completed.");
-        break;
-
+        return;
       } else {
         System.out.println("Command " + command + "not supported!");
       }
     }
   }
 
-  private boolean salaryIsNegative(float salary) {
+  private static boolean isUpperCase(char ch) {
+    return ch >= 'A' && ch <= 'Z';
+  }
+
+  private boolean departmentIsValid(String department) {
+    char[] charArray;
+    charArray = department.toCharArray();
+    int index = 0;
+    for (index = 0; index < charArray.length; index++) {
+      if (!isUpperCase(charArray[index])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean salaryIsNegative(Double salary) {
     if (salary < 0) {
       return true;
     } else {

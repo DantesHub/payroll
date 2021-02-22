@@ -3,18 +3,56 @@
  * 
  * @author Kevin Shin, Christopher Chung
  */
-public class Management extends Employee{
-    @Override
-    public void calculatePayment() {
-    }
+public class Management extends Fulltime {
+  final double MANAGER_EXTRA_COMPENSATION = 5000;
+  final double DEPARTMENT_HEAD_EXTRA_COMPENSATION = 9500;
+  final double DIRECTOR_EXTRA_COMPENSATION = 12000;
+  private double managerCompensation;
+  private int role;
 
-    @Override
-    public func toString() {
+  public Management(Profile profile, Double salary, int role) {
+    super(profile, salary);
+    this.role = role;
+  }
 
+  @Override
+  public void calculatePayment() {
+    super.calculatePayment();
+    if (role == 1) {
+      this.managerCompensation = MANAGER_EXTRA_COMPENSATION / this.getPayPeriods();
+    } else if (role == 2) {
+      this.managerCompensation = DEPARTMENT_HEAD_EXTRA_COMPENSATION / this.getPayPeriods();
+    } else {
+      this.managerCompensation = DIRECTOR_EXTRA_COMPENSATION / this.getPayPeriods();
     }
+    this.setPayment(this.getPayment() + managerCompensation);
+  }
 
-    @Override
-    public func equals() {
-      
+  @Override
+  public String toString() {
+    String roleName;
+    if (role == 1) {
+      roleName = "Manager";
+    } else if (role == 2) {
+      roleName = "DepartmentHead";
+    } else {
+      roleName = "Director";
     }
+    return super.toString() + "::" + roleName + " Compensation $" + String.format("%.2f", this.managerCompensation);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Management)) { // make sure it's management
+      return false;
+    }
+    Management management = (Management) obj;
+    if (super.equals(management)) { // make sure both objects have same profile and salary
+      return true;
+    }
+    return false;
+  }
 }

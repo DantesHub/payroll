@@ -7,10 +7,15 @@ public class Company {
   private Employee[] emplist;
   private int numEmployee;
 
+  public Company() {
+    this.emplist = new Employee[4];
+    this.numEmployee = 0;
+  }
+
   private int find(Employee employee) {
     int didNotFind = -1;
-    for (int idx = 0; idx < emplist.length; idx++) {
-      if (emplist[idx].equals(employee)) {
+    for (int idx = 0; idx < numEmployee; idx++) {
+      if (this.emplist[idx].equals(employee)) {
         return idx;
       }
     }
@@ -25,78 +30,97 @@ public class Company {
 
   public boolean add(Employee employee) { // check the profile before adding
     // check if employee is in the list
-    boolean isProfileValid = checkProfile(employee);
-    if (isProfileValid) {
+
+    int isInList = find(employee);
+    if (isInList != -1) {
       return false;
-    } else {
-      int isInList = find(employee);
-      if (isInList != -1) {
-        System.out.println("Employee is already in the list.");
-        return false;
-      } else { // add employee
-        if (emplist.length % 4 == 0) { // array is full grow
-          grow();
-        }
-        this.emplist[this.numEmployee] = employee;
-        this.numEmployee++;
-        return true;
+    } else { // add employee
+      if (emplist.length % 4 == 0) { // array is full grow
+        grow();
       }
+      this.emplist[this.numEmployee] = employee;
+      this.numEmployee++;
+      return true;
     }
   }
 
-  private boolean checkProfile(Employee employee) { //check if employee profile is valid 
-      return true
-      return false 
-    }
-
   public boolean remove(Employee employee) {
-    if(isEmpty()) {
-      return false; 
+    if (isEmpty()) {
+      return false;
     } else {
-      int idx = find(employee));
-      if(idx  == - 1) {
+      int idx = find(employee);
+      if (idx == -1) {
         return false;
       }
       this.emplist[idx] = null;
-      this.numEmployee--; 
-      for(int i =idx; i<emplist.length - 1; i++) {
-        this.emplist[i] = this.emplist[i+1];
+      this.numEmployee--;
+      for (int i = idx; i < emplist.length - 1; i++) {
+        this.emplist[i] = this.emplist[i + 1];
       }
       return true;
     }
   } // maintain the original sequence
 
+  // how are we suppose to set hours without being able to pass in hours as param?
+  // we cant set hours using employee profile because we cannot create
+  // more instance variables in the profile class
   public boolean setHours(Employee employee) {
+    int index = find(employee);
+    if (index == -1) {
+      return false;
+    }
+    if (this.emplist[index] instanceof Parttime) {
+      return true;
+    }
+    return false;
   } // set working hours for a part time
 
-  private boolean isEmpty() {
-    System.out.println("Employee database is empty.");
+  public boolean isEmpty() {
     return this.numEmployee == 0;
   }
 
   public void processPayments() {
+    for (int idx = 0; idx < numEmployee; idx++) {
+      Employee emp = emplist[idx];
+      if (emp instanceof Management) {
+        emp = (Management) emp;
+      } else if (emp instanceof Parttime) {
+        emp = (Parttime) emp;
+      } else {
+        emp = (Fulltime) emp;
+      }
+      emp.calculatePayment();
+    }
   } // process payments for all employees
 
-  public void print() {
-  } // print earning statements for all employees
+  public void print() {// print earning statements for all employees
+    if (this.isEmpty()) {
+      System.out.println("Employee database is empty.");
+      return;
+    }
+    for (int i = 0; i < this.numEmployee; i++) {
+      System.out.println(this.emplist[i].toString());
+    }
+  }
 
   public void printByDepartment() {
+    this.sortByDepartment();
+    this.print();
   } // print earning statements by department
 
   public void printByDate() {
+    this.sortByDate();
+    this.print();
   } // print earning statements by date hired
-
-  private void compareEmployeeDepartments() {
-
-  }
 
   private void sortByDate() {
     Employee temp;
     for (int i = 0; i < this.numEmployee - 1; i++) {
       for (int j = 0; j < this.numEmployee - i - 1; j++) {
-        if (emplist[j].getDateHired().compareDates(emplist[j + 1].getDateHired())) { // checks if the first book date is
-                                                                                     // less than the second
-          if (emplist[j].getDateHired().compareTo(emplist[j + 1].getDateHired())== 0)) { // checks for equal dates
+        if ((emplist[j].getDateHired()).compareTo(emplist[j + 1].getDateHired()) < 0) { // checks if the first employee
+                                                                                        // date is
+          // less than the second
+          if ((emplist[j].getDateHired()).compareTo(emplist[j + 1].getDateHired()) == 0) { // checks for equal dates
             if (emplist[j].compareEmployeeDepartments(emplist[j + 1])) {
               continue;
             }
@@ -104,6 +128,27 @@ public class Company {
           temp = this.emplist[j];
           this.emplist[j] = this.emplist[j + 1];
           this.emplist[j + 1] = temp;
+        }
+      }
+    }
+  }
+
+  private void sortByDepartment() {
+    Employee temp;
+    for (int i = 0; i < this.numEmployee - 1; i++) {
+      for (int j = 0; j < this.numEmployee - i - 1; j++) {
+        if (emplist[i].profile.getDepartment().compareTo(emplist[j].profile.getDepartment()) == 0) {
+          if (emplist[i].profile.getName().compareTo(emplist[j].profile.getName()) > 0) {
+            temp = this.emplist[j];
+            this.emplist[j] = this.emplist[i];
+            this.emplist[i] = temp;
+            continue;
+          }
+        } else if (emplist[i].profile.getDepartment().compareTo(emplist[j].profile.getDepartment()) > 0) {
+          temp = this.emplist[j];
+          this.emplist[j] = this.emplist[i];
+          this.emplist[i] = temp;
+          continue;
         }
       }
     }

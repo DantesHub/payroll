@@ -6,19 +6,32 @@
 public class Employee {
   Profile profile;
 
-  @Override
+  public Employee(Profile profile) {
+    this.profile = profile;
+  }
+
   public void calculatePayment() {
+
   }
 
   @Override
   public String toString() {
-    return profile.toString() + "Payment " + calculatePayment();
-    ;
+    return this.profile.toString() + "Payment $";
   }
 
   @Override
-  public boolean equals() {
-
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Employee)) {
+      return false;
+    }
+    Employee e = (Employee) obj;
+    if (this.profile.equals(e.profile)) {
+      return true;
+    }
+    return false;
   }
 
   public boolean compareEmployeeDepartments(Employee employee) {
@@ -28,4 +41,5 @@ public class Employee {
   public Date getDateHired() {
     return this.profile.getDateHired();
   }
+
 }

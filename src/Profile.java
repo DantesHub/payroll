@@ -8,6 +8,12 @@ public class Profile {
   private String department; // department code: CS, ECE, IT
   private Date dateHired;
 
+  public Profile(String name, String department, Date dateHired) {
+    this.name = name;
+    this.department = department;
+    this.dateHired = dateHired;
+  }
+
   @Override
   public String toString() {
     String profile = name + "::" + department + "::" + dateHired.monthAsString() + "/" + dateHired.dayAsString() + "/"
@@ -17,9 +23,15 @@ public class Profile {
 
   @Override
   public boolean equals(Object obj) {// compare name, department and dateHired
-    if (stringCompare(this.name,obj.name) == 0) && 
-        (stringCompare(this.department,obj.department) == 0) && 
-        (this.dateHired.compareTo(profile.dateHired)) == 0) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Profile)) {
+      return false;
+    }
+    Profile p = (Profile) obj;
+    if (this.name.equals(p.getName()) && (this.department.equals(p.getDepartment()))
+        && (this.dateHired.compareTo(p.getDateHired())) == 0) {
       return true;
     }
     return false;
@@ -37,34 +49,16 @@ public class Profile {
     return this.name;
   }
 
-  /**
-   * This method is used to compare two strings to see if they are equal
-   * 
-   * @param str1 the first string being compared
-   * @param str2 the second string being compared
-   * @return 0 if the strings are equal, any other number means that they are not
-   *         equal
-   */
-  private static int stringCompare(String str1, String str2) {
-    int length1 = str1.length();
-    int length2 = str2.length();
-    if (length1 <= length2) {
-      int lengthMin = length1;
-    } else
-      lengthmin = length2;
-
-    for (int i = 0; i < lengthMin; i++) {
-      int str1char = (int) str1.charAt(i);
-      int str2char = (int) str2.charAt(i);
-
-      if (str1char != str2char) {
-        return str1char - str2char;
-      }
-    }
-    if (length1 != length2) {
-      return length1 - length2;
-    } else {
-      return 0;
-    }
+  public void setName(String name) {
+    this.name = name;
   }
+
+  public void setDepartment(String department) {
+    this.department = department;
+  }
+
+  public void setDateHired(Date date) {
+    this.dateHired = date;
+  }
+
 }
