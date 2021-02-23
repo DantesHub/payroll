@@ -45,7 +45,7 @@ public class Parttime extends Employee {
   public String toString() {
     DecimalFormat formatter = new DecimalFormat("#,##0.00");
     return super.toString() + formatter.format(this.payment) + "::PART TIME::Hourly Rate:: $"
-        + String.format("%.2f", this.hourlyRate) + "::Hours worked this  period: " + this.hoursWorked;
+        + String.format("%.2f", this.hourlyRate) + "::Hours worked this period: " + this.hoursWorked;
   }
 
   @Override
