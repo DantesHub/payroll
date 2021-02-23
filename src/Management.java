@@ -13,11 +13,10 @@ public class Management extends Fulltime {
   public Management(Profile profile, Double salary, int role) {
     super(profile, salary);
     this.role = role;
+    calculateExtraPay();
   }
 
-  @Override
-  public void calculatePayment() {
-    super.calculatePayment();
+  private void calculateExtraPay() {
     if (role == 1) {
       this.managerCompensation = MANAGER_EXTRA_COMPENSATION / this.getPayPeriods();
     } else if (role == 2) {
@@ -25,6 +24,11 @@ public class Management extends Fulltime {
     } else {
       this.managerCompensation = DIRECTOR_EXTRA_COMPENSATION / this.getPayPeriods();
     }
+  }
+
+  @Override
+  public void calculatePayment() {
+    super.calculatePayment();
     this.setPayment(this.getPayment() + managerCompensation);
   }
 
@@ -46,10 +50,8 @@ public class Management extends Fulltime {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof Management)) { // make sure it's management
-      return false;
-    }
-    Management management = (Management) obj;
+
+    Employee management = (Employee) obj;
     if (super.equals(management)) { // make sure both objects have same profile and salary
       return true;
     }

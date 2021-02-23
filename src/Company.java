@@ -91,7 +91,18 @@ public class Company {
       }
       emp.calculatePayment();
     }
+
   } // process payments for all employees
+    // if (emp instanceof Management) {
+    // Management management = (Management) emp;
+    // management.calculatePayment();
+    // } else if (emp instanceof Parttime) {
+    // Parttime parttime = (Parttime) emp;
+    // parttime.calculatePayment();
+    // } else {
+    // Fulltime fulltime = (Fulltime) emp;
+    // fulltime.calculatePayment();
+    // }
 
   public void print() {// print earning statements for all employees
     if (this.isEmpty()) {
@@ -104,11 +115,17 @@ public class Company {
   }
 
   public void printByDepartment() {
+    if (!isEmpty()) {
+      System.out.println("--Printing earning statements by department--");
+    }
     this.sortByDepartment();
     this.print();
   } // print earning statements by department
 
   public void printByDate() {
+    if (!isEmpty()) {
+      System.out.println("--Printing earning statements by date hired--");
+    }
     this.sortByDate();
     this.print();
   } // print earning statements by date hired
@@ -117,7 +134,7 @@ public class Company {
     Employee temp;
     for (int i = 0; i < this.numEmployee - 1; i++) {
       for (int j = 0; j < this.numEmployee - i - 1; j++) {
-        if ((emplist[j].getDateHired()).compareTo(emplist[j + 1].getDateHired()) < 0) { // checks if the first employee
+        if ((emplist[j].getDateHired()).compareTo(emplist[j + 1].getDateHired()) > 0) { // checks if the first employee
                                                                                         // date is
           // less than the second
           if ((emplist[j].getDateHired()).compareTo(emplist[j + 1].getDateHired()) == 0) { // checks for equal dates
@@ -135,17 +152,20 @@ public class Company {
 
   private void sortByDepartment() {
     Employee temp;
-    for (int i = 0; i < this.numEmployee - 1; i++) {
-      for (int j = 0; j < this.numEmployee - i - 1; j++) {
+    for (int i = 0; i < this.numEmployee; i++) {
+      for (int j = i + 1; j < this.numEmployee; j++) {
         if (emplist[i].profile.getDepartment().compareTo(emplist[j].profile.getDepartment()) == 0) {
           if (emplist[i].profile.getName().compareTo(emplist[j].profile.getName()) > 0) {
             temp = this.emplist[j];
+            System.out.println("00000" + temp + "temp");
             this.emplist[j] = this.emplist[i];
             this.emplist[i] = temp;
             continue;
           }
-        } else if (emplist[i].profile.getDepartment().compareTo(emplist[j].profile.getDepartment()) > 0) {
+        } else if (emplist[i].profile.getDepartment().compareTo(emplist[j].profile.getDepartment()) > 0) { // first >
+                                                                                                           // second
           temp = this.emplist[j];
+          System.out.println("11111" + temp + " bean");
           this.emplist[j] = this.emplist[i];
           this.emplist[i] = temp;
           continue;

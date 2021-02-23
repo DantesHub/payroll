@@ -46,17 +46,12 @@ public class Fulltime extends Employee {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof Fulltime)) {
-      return false;
-    }
+
     Employee e = (Employee) obj;
-    if (!super.equals(e)) { // check if profiles match
-      return false;
-    }
-    Fulltime fulltime = (Fulltime) e;
-    if (this.salary == fulltime.salary) { // check if salaries match
+    if (super.equals(e)) { // check if profiles match
       return true;
     }
+
     return false;
   }
 }

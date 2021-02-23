@@ -20,6 +20,7 @@ public class PayrollProcessing {
   Employee temp;
 
   public void run() {
+    System.out.println("Payroll processing starts.");
     company = new Company();
     String input = "start";
     String command = null;
@@ -62,13 +63,13 @@ public class PayrollProcessing {
             }
           }
         } else {
-          System.out.println(dateHired + "is not a valid date!");
+          System.out.println(dateHired + " is not a valid date!");
           continue;
         }
 
       } else if (command.equals("AF")) { // Add a fulltime employee
         if (!date.isValid()) {
-          System.out.println(dateHired + "is not a valid date!");
+          System.out.println(dateHired + " is not a valid date!");
           continue;
         }
         salary = Double.parseDouble(inputs.nextToken());
@@ -91,7 +92,7 @@ public class PayrollProcessing {
         }
       } else if (command.equals("AM")) { // Add a manager
         if (!date.isValid()) {
-          System.out.println(dateHired + "is not a valid date!");
+          System.out.println(dateHired + " is not a valid date!");
         }
         salary = Double.parseDouble(inputs.nextToken());
         role = Integer.parseInt(inputs.nextToken());
@@ -117,9 +118,16 @@ public class PayrollProcessing {
           }
         }
       } else if (command.equals("R")) {// Removes an employee from company database
-        System.out.println("Employee removed."); // success
-        // if empty
-        System.out.println("Employee database is empty.");
+        if (company.isEmpty()) {
+          System.out.println("Employee database is empty.");
+        }
+        Profile profile = new Profile(name, department, date);
+        Employee employee = new Employee(profile);
+        if (company.remove(employee)) {
+          System.out.println("Employee removed.");
+        } else { // if empty
+          System.out.println("Employee does not exist.");// success
+        }
       } else if (command.equals("C")) {// Calculate total payments for all employees
         if (company.isEmpty()) {
           System.out.println("Employee database is empty.");
@@ -128,36 +136,48 @@ public class PayrollProcessing {
         company.processPayments();
         System.out.println("Calculation of employee payments is done.");
       } else if (command.equals("S")) {// Set the hours for a part time employee
-        int hoursWorked = Integer.parseInt(inputs.nextToken());
-        if (hoursWorked > 100) {
-          System.out.println("Invalid Hours: over 100.");
-        } else if (hoursWorked < 0) {
-          System.out.println("Working hours cannot be negative.");
+        if (company.isEmpty()) {
+          System.out.println("Employee database is empty.");
+          continue;
         }
-        Profile profile = new Profile(name, department, date);
-        Employee e = new Employee(profile);
-        if (company.setHours(e)) { // employee exists in list
+        try {
+          int hoursWorked = Integer.parseInt(inputs.nextToken());
+          if (hoursWorked > 100) {
+            System.out.println("Invalid Hours: over 100.");
+          } else if (hoursWorked < 0) {
+            System.out.println("Working hours cannot be negative.");
+          }
 
+          Profile profile = new Profile(name, department, date);
+          Employee e = new Employee(profile);
+          if (company.setHours(e)) { // employee exists in list
+
+          }
+          if (!company.setHours(e)) {
+            System.out.println("Employee does not exist.");
+          }
+          ;
+          System.out.println("Working hours set.");
+        } catch (Exception e) {
+          System.out.println("fds");
         }
-        if (!company.setHours(e)) {
-          System.out.println("Employee does not exist.");
-        }
-        ;
-        System.out.println("Working hours set.");
+
       } else if (command.equals("PA")) {// Prints the earning statements for all employees
-        System.out.println("--Printing earning statements for all employees--");
+        if (!company.isEmpty()) {
+          System.out.println("--Printing earning statements for all employees--");
+        }
         company.print();
       } else if (command.equals("PH")) {// Prints the earning statements for all employees in the order of date hired
+
         company.printByDate();
-        System.out.println("--Printing earning statements by date hired--");
       } else if (command.equals("PD")) {// Prints the earning statements for all employees grouped by departments.
-        System.out.println("--Printing earning statements by department--");
+        company.printByDepartment();
       } else if (command.equals("Q")) {// Ends session, breaks loop
         company.printByDepartment();
         System.out.println("Payroll Processing completed.");
         return;
       } else {
-        System.out.println("Command " + command + "not supported!");
+        System.out.println("Command '" + command + "' not supported!");
       }
     }
   }
@@ -174,6 +194,10 @@ public class PayrollProcessing {
       if (!isUpperCase(charArray[index])) {
         return false;
       }
+    }
+    if (!department.equalsIgnoreCase("IT") && !department.equalsIgnoreCase("CS")
+        && !department.equalsIgnoreCase("ECE")) {
+      return false;
     }
     return true;
   }

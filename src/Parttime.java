@@ -20,6 +20,7 @@ public class Parttime extends Employee {
     this.hoursWorked = hoursWorked;
   }
 
+  @Override
   public void calculatePayment() {
     double overtime;
     if (this.hoursWorked > MAXIMUM_HOURS_PER_WEEK * payPeriod) { // if worked overtime
@@ -32,8 +33,8 @@ public class Parttime extends Employee {
 
   @Override
   public String toString() {
-    return super.toString() + " $" + String.format("%.2f", this.payment) + "::PART TIME::Hourly Rate:: "
-        + this.hourlyRate + "::Hours worked this  period: " + this.hoursWorked;
+    return super.toString() + String.format("%.2f", this.payment) + "::PART TIME::Hourly Rate:: " + this.hourlyRate
+        + "::Hours worked this  period: " + this.hoursWorked;
   }
 
   @Override
@@ -41,15 +42,13 @@ public class Parttime extends Employee {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof Parttime)) {
-      return false;
-    }
-    Parttime parttime = (Parttime) obj;
+
+    Employee parttime = (Employee) obj;
+
     if (super.equals(parttime)) { // check if profiles match
-      if (this.hourlyRate == parttime.hourlyRate && this.hoursWorked == parttime.hoursWorked) {
-        return true;
-      }
+      return true;
     }
+
     return false;
   }
 }

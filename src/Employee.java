@@ -10,10 +10,6 @@ public class Employee {
     this.profile = profile;
   }
 
-  public void calculatePayment() {
-
-  }
-
   @Override
   public String toString() {
     return this.profile.toString() + "Payment $";
@@ -24,14 +20,16 @@ public class Employee {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof Employee)) {
-      return false;
-    }
+
     Employee e = (Employee) obj;
     if (this.profile.equals(e.profile)) {
       return true;
     }
     return false;
+  }
+
+  void calculatePayment() {
+
   }
 
   public boolean compareEmployeeDepartments(Employee employee) {
