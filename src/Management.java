@@ -1,8 +1,11 @@
+
 /**
  * 
  * 
  * @author Kevin Shin, Christopher Chung
  */
+import java.text.DecimalFormat;
+
 public class Management extends Fulltime {
   final double MANAGER_EXTRA_COMPENSATION = 5000;
   final double DEPARTMENT_HEAD_EXTRA_COMPENSATION = 9500;
@@ -42,7 +45,8 @@ public class Management extends Fulltime {
     } else {
       roleName = "Director";
     }
-    return super.toString() + "::" + roleName + " Compensation $" + String.format("%.2f", this.managerCompensation);
+    DecimalFormat formatter = new DecimalFormat("#,##0.00");
+    return super.toString() + "::" + roleName + " Compensation $" + formatter.format(this.managerCompensation);
   }
 
   @Override

@@ -51,7 +51,8 @@ public class PayrollProcessing {
             continue;
           } else {
             Profile profile = new Profile(name, department, date);
-            Parttime employee = new Parttime(profile, payRate);
+            Parttime employee = new Parttime(profile);
+            employee.setHourlyRate(payRate);
             if (!departmentIsValid(department)) {
               System.out.println("'" + department + "'" + " is not a valid department code.");
               continue;
@@ -149,17 +150,15 @@ public class PayrollProcessing {
           }
 
           Profile profile = new Profile(name, department, date);
-          Employee e = new Employee(profile);
+          Parttime e = new Parttime(profile);
+          e.setHoursWorked(hoursWorked);
           if (company.setHours(e)) { // employee exists in list
-
-          }
-          if (!company.setHours(e)) {
+            System.out.println("Working hours set.");
+          } else {
             System.out.println("Employee does not exist.");
           }
-          ;
-          System.out.println("Working hours set.");
         } catch (Exception e) {
-          System.out.println("fds");
+          System.out.println("");
         }
 
       } else if (command.equals("PA")) {// Prints the earning statements for all employees

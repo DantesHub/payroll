@@ -1,19 +1,29 @@
+
 /**
  * 
  * 
  * @author Kevin Shin, Christopher Chung
  */
+import java.text.DecimalFormat;
+
 public class Parttime extends Employee {
   private double hourlyRate;
   private final int MAXIMUM_HOURS_PER_WEEK = 40;
   private int hoursWorked = 0;
-  private double payment;
+  private double payment = 0;
   private final double payPeriod = 2;
   private final double overTimeRate = 1.5;
 
-  public Parttime(Profile profile, double hourlyRate) {
+  public Parttime(Profile profile) {
     super(profile);
+  }
+
+  public void setHourlyRate(Double hourlyRate) {
     this.hourlyRate = hourlyRate;
+  }
+
+  public double getHourlyRate() {
+    return this.hourlyRate;
   }
 
   public void setHoursWorked(int hoursWorked) {
@@ -33,8 +43,9 @@ public class Parttime extends Employee {
 
   @Override
   public String toString() {
-    return super.toString() + String.format("%.2f", this.payment) + "::PART TIME::Hourly Rate:: " + this.hourlyRate
-        + "::Hours worked this  period: " + this.hoursWorked;
+    DecimalFormat formatter = new DecimalFormat("#,##0.00");
+    return super.toString() + formatter.format(this.payment) + "::PART TIME::Hourly Rate:: $"
+        + String.format("%.2f", this.hourlyRate) + "::Hours worked this  period: " + this.hoursWorked;
   }
 
   @Override

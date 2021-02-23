@@ -69,7 +69,11 @@ public class Company {
     if (index == -1) {
       return false;
     }
-    if (this.emplist[index] instanceof Parttime) {
+    if (this.emplist[index] instanceof Parttime) { // replace old parttime with new one with hours worked
+      Parttime parttime = (Parttime) employee;
+      Parttime temp = (Parttime) this.emplist[index];
+      parttime.setHourlyRate(temp.getHourlyRate()); // get and set hourly rate
+      this.emplist[index] = parttime;
       return true;
     }
     return false;
@@ -165,7 +169,6 @@ public class Company {
         } else if (emplist[i].profile.getDepartment().compareTo(emplist[j].profile.getDepartment()) > 0) { // first >
                                                                                                            // second
           temp = this.emplist[j];
-          System.out.println("11111" + temp + " bean");
           this.emplist[j] = this.emplist[i];
           this.emplist[i] = temp;
           continue;

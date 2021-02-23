@@ -1,8 +1,11 @@
+
 /**
  * 
  * 
  * @author Kevin Shin, Christopher Chung
  */
+import java.text.DecimalFormat;
+
 public class Fulltime extends Employee {
   private double salary;
   private double payment;
@@ -37,8 +40,9 @@ public class Fulltime extends Employee {
 
   @Override
   public String toString() {
-    return super.toString() + String.format("%.2f", this.payment) + "::FULL TIME::Annual Salary $"
-        + String.format("%.2f", this.salary);
+    DecimalFormat formatter = new DecimalFormat("#,##0.00");
+    return super.toString() + formatter.format(this.payment) + "::FULL TIME::Annual Salary $"
+        + formatter.format(this.salary);
   }
 
   @Override
